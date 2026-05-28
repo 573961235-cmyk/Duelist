@@ -17,18 +17,17 @@
     .page-item.active{display:block;}
     .q-title{font-size:16px;line-height:1.8;margin:30px 0 40px;text-align:center;}
     .score-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-    .score-item{width:65px;height:65px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #334155;font-size:15px;color:#ccc;cursor:pointer;transition:0.2s;}
+    .score-item{width:65px;height:65px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #334555;font-size:15px;color:#ccc;cursor:pointer;transition:0.2s;}
     .score-item.active{background:#5D26FF;color:#fff;border-color:#6A4CFF;font-weight:bold;}
     .btn-box{display:flex;gap:15px;margin-top:50px;justify-content:center;}
     .prev-btn,.next-btn{padding:12px 28px;border-radius:8px;font-size:15px;font-weight:bold;cursor:pointer;border:none;transition:0.2s;}
     .prev-btn{background:transparent;color:#5D26FF;border:1px solid #6A4CFF;}
     .next-btn{background:#5D26FF;color:#fff;}
-    .submit-btn{padding:14px 35px;background:#5D26FF;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;margin:30px auto;display:block;}
-    .reset-btn{padding:12px 28px;background:transparent;color:#5D26FF;border:1px solid #6A4CFF;border-radius:8px;font-size:15px;font-weight:bold;cursor:pointer;margin:15px auto;display:block;}
     .result-box{display:none;background:#1a2332;border:1px solid #6A4CFF;border-radius:12px;padding:28px;margin-top:20px;}
     .res-name{font-size:26px;color:#5D26FF;font-weight:bold;text-align:center;margin-bottom:20px;}
     .res-block{margin:15px 0;line-height:1.8;}
     .res-block strong{color:#6A4CFF;}
+    .reset-btn{padding:12px 28px;background:transparent;color:#5D26FF;border:1px solid #6A4CFF;border-radius:8px;font-size:15px;font-weight:bold;cursor:pointer;margin:15px auto;display:block;}
 </style>
 </head>
 <body>
@@ -55,7 +54,6 @@
 </div>
 
 <script>
-// 题目列表
 const questions = [
     {id:1,dim:"A",desc:"对局拿到优势，我会主动前压找对枪，不会原地保守卡点。"},
     {id:2,dim:"A",desc:"枪械优势在手，我愿意主动单摸突破，撕开敌方防守防线。"},
@@ -69,7 +67,6 @@ const questions = [
     {id:10,dim:"B",desc:"团队节奏拖沓时，我会自己单独找突破口带起对局节奏。"}
 ];
 
-// 结果库
 const resData = {
     A1B1:{
         name:"本能莽杀者",
@@ -105,7 +102,6 @@ let nowPage = 0;
 let answerArr = {};
 const totalPage = questions.length;
 
-// 渲染分页题目
 function renderPage(){
     let html = "";
     questions.forEach((item,idx)=>{
@@ -133,14 +129,11 @@ function renderPage(){
     updateProgress();
 }
 
-// 选择答案并自动翻页
 function chooseAns(qid,val){
     answerArr[qid] = val;
-    // 高亮选中
     let pageDom = document.querySelector(`.page-item[data-page="${nowPage}"]`);
     pageDom.querySelectorAll(".score-item").forEach(el=>el.classList.remove("active"));
     event.target.classList.add("active");
-    // 选完自动下一页
     setTimeout(()=>{
         if(nowPage < totalPage -1){
             nextPage();
@@ -150,7 +143,6 @@ function chooseAns(qid,val){
     },350)
 }
 
-// 上一题
 function prevPage(){
     if(nowPage <= 0) return;
     document.querySelector(`.page-item[data-page="${nowPage}"]`).classList.remove("active");
@@ -159,7 +151,6 @@ function prevPage(){
     updateProgress();
 }
 
-// 下一题
 function nextPage(){
     if(nowPage >= totalPage-1) return;
     document.querySelector(`.page-item[data-page="${nowPage}"]`).classList.remove("active");
@@ -168,18 +159,15 @@ function nextPage(){
     updateProgress();
 }
 
-// 更新进度条
 function updateProgress(){
     let per = (nowPage / totalPage) * 100;
     document.getElementById("progress").style.width = per + "%";
 }
 
-// 计分算结果
 function countResult(){
     let A = {bold:0,steady:0};
     let B = {team:0,solo:0};
     let isAllDone = true;
-
     questions.forEach((item,idx)=>{
         let num = answerArr[idx+1];
         if(num===undefined) isAllDone=false;
@@ -192,14 +180,11 @@ function countResult(){
             if(num===4||num===5) B.solo++;
         }
     })
-
     if(!isAllDone) return alert("请完成所有题目选择！");
-
     let Ares = A.bold > A.steady ? "1" : "2";
     let Bres = B.solo > B.team ? "1" : "2";
     let key = "A"+Ares+"B"+Bres;
     let data = resData[key];
-
     document.getElementById("resName").innerText = data.name;
     document.getElementById("resText").innerText = data.text;
     document.getElementById("resHero").innerText = data.hero;
@@ -209,7 +194,6 @@ function countResult(){
     window.scrollTo(0,document.body.scrollHeight);
 }
 
-// 全部重置
 function allReset(){
     nowPage = 0;
     answerArr = {};
